@@ -6,86 +6,91 @@ import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.widget.SeekBar
 import android.widget.TextView
-import kotlin.math.round
+import java.lang.Math.round
 
 class MainActivity : AppCompatActivity() {
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    var usdSeekBar:SeekBar? = null
+    var lbsSeekBar:SeekBar?= null
+    var usdTotal:TextView?= null
+    var lbsTotal:TextView?= null
+
+        @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+            usdSeekBar = findViewById(R.id.usd_seek_bar)
+            lbsSeekBar = findViewById(R.id.lbs_seek_bar)
+            usdTotal =   findViewById(R.id.usd_total)
+            lbsTotal =   findViewById(R.id.lbs_total)
 
 
-        var usd_seek_bar: SeekBar = findViewById(R.id.usd_seek_bar)
-        var lbs_seek_bar: SeekBar = findViewById(R.id.lbs_seek_bar)
-
-        var usd_total: TextView = findViewById(R.id.usd_total)
-        var lbs_total: TextView = findViewById(R.id.lbs_total)
+            setBoundaries()
 
 
-        usd_seek_bar.setMin(1)
-
-        usd_seek_bar.setMax(125)
-
-        lbs_seek_bar.setMin(1)
-
-        lbs_seek_bar.setMax(100)
 
 
-        usd_seek_bar?.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
+
+
+        usdSeekBar?.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
 
             var usd_sync=0
 
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 //progress changed
-                usd_total.setText("USD:"+progress)
+                usdTotal?.text = "USD:$progress"
                 usd_sync=progress
 
-
-
-                findViewById<TextView>(R.id.total).setText("Total cost:"+progress)
+                findViewById<TextView>(R.id.total).text = "Total cost:"+progress
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-               //when change starts
+               //when the change starts
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 if(usd_sync.toFloat()<10/1.75)
-                    lbs_seek_bar.setProgress(round(usd_sync/1.75f).toInt())
+                    lbsSeekBar?.progress = round(usd_sync/1.75f)
                 else
-                    lbs_seek_bar.setProgress(round(usd_sync/1.25f).toInt())
+                    lbsSeekBar?.progress = round(usd_sync/1.25f)
             }
         })
 
-        lbs_seek_bar?.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
+        lbsSeekBar?.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
 
             var lbs_sync=0
 
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 //progress changed
 
-                lbs_total.setText("lbs:"+progress)
-
+                lbsTotal?.text = "lbs:$progress"
                 lbs_sync=progress
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
 
-                //when change starts
-//                if(lbs_sync<10)
-//                    usd_seek_bar.setProgress(round(lbs_sync/1.75f).toInt())
-//                else
-//                    usd_seek_bar.setProgress(round(lbs_sync/1.25f).toInt())
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 if(lbs_sync<10)
-                    usd_seek_bar.setProgress(round(lbs_sync*1.75f).toInt())
+                    usdSeekBar?.progress = round(lbs_sync*1.75f)
                 else
-                    usd_seek_bar.setProgress(round(lbs_sync*1.25f).toInt())
+                    usdSeekBar?.progress = round(lbs_sync*1.25f)
             }
         })
+
+    }
+
+
+    private fun setBoundaries(){
+
+        usdSeekBar?.min = 1
+
+        usdSeekBar?.max = 125
+
+        lbsSeekBar?.min = 1
+
+        lbsSeekBar?.max = 100
 
     }
 
