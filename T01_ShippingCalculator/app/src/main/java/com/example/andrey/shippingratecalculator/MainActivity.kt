@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                if(usd_sync.toFloat()<10/1.75)
+                if(usd_sync.toFloat()<10*1.75)
                     lbsSeekBar?.progress = round(usd_sync/1.75f)
                 else
                     lbsSeekBar?.progress = round(usd_sync/1.25f)
