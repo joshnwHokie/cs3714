@@ -83,7 +83,7 @@ class MyViewModel: ViewModel(){
 
     private val viewModelJob = Job()
 
-    //the scope is a must in order to ensure friendll
+    //the scope is a must in order to ensure friendly behavior
     private val ioScope = CoroutineScope(Dispatchers.IO + viewModelJob)
 
     fun slowLapCapture() {
@@ -93,7 +93,8 @@ class MyViewModel: ViewModel(){
             // it will be automatically killed if viewmodel is destroyed.
             delay(1000L)
             updateLiveData(mElapsedTime.value.toString())
-        }
+
+            }
     }
 
     private fun updateLiveData(lap:String?){

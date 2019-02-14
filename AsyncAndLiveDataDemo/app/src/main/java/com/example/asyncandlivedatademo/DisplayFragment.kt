@@ -18,18 +18,26 @@ class DisplayFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val v = inflater.inflate(R.layout.fragment_display, container, false)
+//        var temp = activity
 
-
-        val model = activity?.let { ViewModelProviders.of(it).get(MyViewModel::class.java) }
+//        if(temp!=null){
+//
+//          val model =  ViewModelProviders.of(temp).get(MyViewModel::class.java)
+//        }
+        val model = activity?.let { ViewModelProviders.of(it).get(MyViewModel::class.java)}
 
 
         model?.getElapsedTime()?.observe(this, Observer<Long>{ time ->
+
             v?.findViewById<TextView>(R.id.timer)?.text = "$time seconds elapsed"
+
         })
 
 
         model?.getLapTime()?.observe(this, Observer<String>{ laps ->
+
              v?.findViewById<TextView>(R.id.laps)?.text = laps
+
         })
 
 

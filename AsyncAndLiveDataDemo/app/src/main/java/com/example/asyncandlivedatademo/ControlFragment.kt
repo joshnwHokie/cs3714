@@ -29,6 +29,10 @@ class ControlFragment : Fragment() {
             model?.slowLapCapture()
         }
 
+        (v.findViewById(R.id.cancel) as Button).setOnClickListener{
+            model?.fastCancel()
+        }
+
         (v.findViewById(R.id.clear) as Button).setOnClickListener{
             model?.slowClear()
         }

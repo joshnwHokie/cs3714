@@ -17,6 +17,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/lap"/>
         <Button
+                android:text="CancellLap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/cancel"/>
+        <Button
                 android:text="clear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/clear"/>
