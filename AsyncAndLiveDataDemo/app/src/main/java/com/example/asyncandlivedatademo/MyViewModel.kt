@@ -87,6 +87,8 @@ class MyViewModel: ViewModel(){
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     fun slowLapCapture() {
+
+
         uiScope.launch { // launch new coroutine in background and continue
             // it will be automatically killed if viewmodel is destroyed.
             delay(1000L)
@@ -101,6 +103,11 @@ class MyViewModel: ViewModel(){
     fun getLapTime():MutableLiveData<String>{
         return mLap
     }
+
+    //cancelling the coroutine
+    fun fastCancel(){
+        uiScope.coroutineContext.cancel()
+            }
 
     // -------------------------------
 
