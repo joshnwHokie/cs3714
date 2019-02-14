@@ -84,12 +84,12 @@ class MyViewModel: ViewModel(){
     private val viewModelJob = Job()
 
     //the scope is a must in order to ensure friendll
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    private val ioScope = CoroutineScope(Dispatchers.IO + viewModelJob)
 
     fun slowLapCapture() {
 
 
-        uiScope.launch { // launch new coroutine in background and continue
+        ioScope.launch { // launch new coroutine in background and continue
             // it will be automatically killed if viewmodel is destroyed.
             delay(1000L)
             updateLiveData(mElapsedTime.value.toString())
@@ -97,7 +97,7 @@ class MyViewModel: ViewModel(){
     }
 
     private fun updateLiveData(lap:String?){
-        lap?.let { mLap.value = mLap.value+" "+it }
+        lap?.let { mLap.postValue( mLap.value+" "+it) }
     }
 
     fun getLapTime():MutableLiveData<String>{
@@ -106,7 +106,7 @@ class MyViewModel: ViewModel(){
 
     //cancelling the coroutine
     fun fastCancel(){
-        uiScope.coroutineContext.cancel()
+        ioScope.coroutineContext.cancel()
             }
 
     // -------------------------------
