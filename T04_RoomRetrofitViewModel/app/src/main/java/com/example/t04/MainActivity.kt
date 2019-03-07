@@ -42,6 +42,9 @@ class MainActivity : AppCompatActivity() {
             model.refreshMovies(1)
         }
 
+
+
+
         }
 
 
