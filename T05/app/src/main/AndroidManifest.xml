@@ -16,13 +16,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-
-
         </activity>
 
-        <receiver android:name=".MusicCompletionReceiver"/>
+        <service android:name=".MusicService" android:label="Music Service"/>
 
-<service android:name=".MusicService" android:label = "Music Service"/>
+        <receiver android:name=".MusicCompletionReceiver"/>
 
     </application>
 

@@ -14,8 +14,31 @@ import android.view.View
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
+
+
     override fun onClick(v: View?) {
 
+        if(isBound){
+            when (musicService?.getPlayingStatus()) {
+                0 -> {
+                    musicService?.startMusic()
+                    play?.setText("Pause")
+
+                }
+                1 -> {
+                    musicService?.pauseMusic()
+                    play?.setText("Resume")
+
+                }
+                2 ->{
+                    musicService?.resumeMusic()
+                    play?.setText("Pause")
+
+                }
+
+            }
+
+        }
     }
 
     val INITIALIZE_STATUS = "intialization status"
@@ -25,20 +48,79 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     var music: TextView? = null
 
 
+    var musicService: MusicService? =null
+    var musicCompletionReceiver: MusicCompletionReceiver?=null
+    var startMusicServiceIntent: Intent?  =null
+    var isInitialized = false
+    var isBound = false
 
 
 
 
+    private val musicServiceConnection = object: ServiceConnection {
+
+                override fun onServiceDisconnected(name: ComponentName?) {
+                    musicService = null
+                    isBound = false
+
+        }
+
+        override fun onServiceConnected(name: ComponentName?, iBinder: IBinder?) {
+
+            var binder = iBinder as MusicService.MyBinder
+            musicService = binder.getService()
+            isBound = true
+            when (musicService?.getPlayingStatus()){
+                0 -> play?.text = "Start"
+                1 -> play?.text = "Pause"
+                2 -> play?.text = "Resume"
+
+            }
+
+        }
+
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        play = findViewById(R.id.play)
+        music = findViewById(R.id.music)
+        play?.setOnClickListener(this)
+
+        startMusicServiceIntent = Intent(this, MusicService::class.java)
+        if(!isInitialized){
+            startService(startMusicServiceIntent)
+            isInitialized = true
+        }
+        musicCompletionReceiver =MusicCompletionReceiver(this)
 
 
     }
 
-    fun updateName(musicName: String) {
+    fun updateName(musicName: String?) {
         music?.text = "You are listening to " + musicName
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+
+        if(isInitialized && !isBound)
+        bindService(startMusicServiceIntent,musicServiceConnection, Context.BIND_AUTO_CREATE)
+
+        registerReceiver(musicCompletionReceiver,IntentFilter(MusicService.COMPLETE_INTENT))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(isBound){
+
+            unbindService(musicServiceConnection)
+            isBound = false
+        }
+        unregisterReceiver(musicCompletionReceiver)
     }
 }

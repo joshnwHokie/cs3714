@@ -1,9 +1,6 @@
 package com.example.t05
-
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-
-import android.media.AudioManager
 import java.io.IOException
 
 
@@ -17,7 +14,7 @@ class MusicPlayer(val musicService: MusicService): MediaPlayer.OnCompletionListe
     val MUSICNAME = arrayOf("Super Mario", "Tetris")
 
 
-    var player: MediaPlayer? = null
+    lateinit var player: MediaPlayer
     var currentPosition = 0
     var musicIndex = 0
     private var musicStatus = 0//0: before starts 1: playing 2: paused
@@ -33,16 +30,16 @@ class MusicPlayer(val musicService: MusicService): MediaPlayer.OnCompletionListe
 
     fun playMusic() {
         player = MediaPlayer()
-        player!!.setAudioAttributes(
+        player.setAudioAttributes(
             AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build())
         try {
-            player!!.setDataSource(MUSICPATH[musicIndex])
-            player!!.prepare()
-            player!!.setOnCompletionListener(this)
-            player!!.start()
+            player.setDataSource(MUSICPATH[musicIndex])
+            player.prepare()
+            player.setOnCompletionListener(this)
+            player.start()
             musicService.onUpdateMusicName(getMusicName())
         } catch (ex: IOException) {
             ex.printStackTrace()
@@ -52,26 +49,23 @@ class MusicPlayer(val musicService: MusicService): MediaPlayer.OnCompletionListe
     }
 
     fun pauseMusic() {
-        if (player != null && player!!.isPlaying()) {
-            player!!.pause()
-            currentPosition = player!!.getCurrentPosition()
+        if (player.isPlaying()) {
+            player.pause()
+            currentPosition = player.getCurrentPosition()
             musicStatus = 2
         }
     }
 
     fun resumeMusic() {
-        if (player != null) {
-            player!!.seekTo(currentPosition)
-            player!!.start()
-            musicStatus = 1
-        }
+        player.seekTo(currentPosition)
+        player.start()
+        musicStatus = 1
     }
 
 
     override fun onCompletion(mp: MediaPlayer?) {
         musicIndex = (musicIndex + 1) % 2
-        player!!.release()
-        player = null
+        player.release()
         playMusic()
     }
 
