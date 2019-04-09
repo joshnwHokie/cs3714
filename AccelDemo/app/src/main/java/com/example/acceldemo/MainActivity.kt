@@ -16,6 +16,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
 
     private lateinit var readings: TextView
+    private lateinit var readings2: TextView
+    private lateinit var readings3: TextView
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
 
@@ -24,6 +26,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
 
         readings.text = event?.values?.get(0).toString()
+        readings2.text = event?.values?.get(1).toString()
+        readings3.text = event?.values?.get(2).toString()
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +39,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
         readings = findViewById(R.id.readings)
+        readings2 = findViewById(R.id.readings2)
+        readings3 = findViewById(R.id.readings3)
+
     }
 
     override fun onPause() {
