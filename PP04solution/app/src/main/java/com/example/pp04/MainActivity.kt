@@ -1,13 +1,10 @@
-package com.example.t04
+package com.example.pp04
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.view.*
+import android.widget.*
+
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,14 +13,68 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
+
+
+    val adapter = MovieListAdapter()
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+
+        return true
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+
+        adapter.search(query)
+        return true
+    }
+
+
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.action_bar_menu, menu)
+
+        val searchItem: MenuItem = menu.findItem(R.id.search_movie)
+        searchItem.setOnActionExpandListener(object: MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                adapter.restore()
+               return true
+            }
+        })
+
+
+
+        val searchView: SearchView = searchItem.actionView as SearchView
+
+        searchView.setOnQueryTextListener(this)
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+//            R.id.restore_list ->{
+//               //action to be performed
+//            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val recyclerView = findViewById<RecyclerView>(R.id.movie_list)
-        val adapter = MovieListAdapter()
+
+
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -56,12 +107,35 @@ class MainActivity : AppCompatActivity() {
 
     inner class MovieListAdapter():
         RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>(){
+
+
+
         private var movies = emptyList<MovieItem>()
 
+        private var moviesBackup= emptyList<MovieItem>()
+
+
         internal fun setMovies(movies: List<MovieItem>) {
+
+            moviesBackup = movies
             this.movies = movies
             notifyDataSetChanged()
         }
+
+        fun search(query: String?) {
+
+            movies = movies.filter{it.title.contains(query!!)}
+
+            notifyDataSetChanged()
+
+        }
+
+        fun restore(){
+
+            movies = moviesBackup
+            notifyDataSetChanged()
+        }
+
 
         override fun getItemCount(): Int {
 
@@ -97,6 +171,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+
 
 
         inner class MovieViewHolder(val view: View): RecyclerView.ViewHolder(view), View.OnClickListener{
